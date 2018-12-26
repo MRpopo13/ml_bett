@@ -26,7 +26,7 @@ past_results = np.loadtxt("resources\\past_results.csv", delimiter="\t")
 
 # clean_data = equalize_dataset(name_file)
 # odds = np.concatenate((dataset[:, 13:16], dataset[:, 17], dataset[:, 6]), axis=1)
-odds = dataset[:, 5:18]
+odds = dataset[:, 5:10]
 results = dataset[:, 24]
 # seq = map(lambda x: 0 if x == 0 else 1, results)
 # seq = map(lambda x: x - 1, results)
@@ -43,17 +43,19 @@ results_test = past_results[:, 0]
 
 
 def hist_proof(clf_model):
-    predict_result = clf_model.predict(test_dataset)
-    comp_res = [test_dataset[i][1] if predict_result[i] == 1 else test_dataset[i][1] for i in
-                range(len(test_dataset))]
-    predict_proba_result = clf_model.predict_proba(test_dataset)
-    predict_result = [(comp_res[i], results_test[i]) for i in range(len(predict_proba_result)) if
+    past_test = past_features[:, :5]
+    predict_result = clf_model.predict(past_test)
+    comp_res = [past_test[i][1] if predict_result[i] == 1 else past_test[i][1] for i in
+                range(len(past_test))]
+    # predict_proba_result = clf_model.predict_proba(past_test)
+    predict_result = [(comp_res[i], results_test[i]) for i in range(len(comp_res)) if
+                      # predict_proba_result[i][1] * 100 > 85]
                       predict_result[i] == 1]
 
     # print([sum([1 if x == 0 else 0 for x in predict_result]) / len(predict_result) * 100,
     #        sum([1 if x == 1 else 0 for x in predict_result]) / len(predict_result) * 100])
 
-    print("Number of correct pred ", len(predict_result))
+    print("Number of correct pred ", len(predict_result) / len(past_test) * 100)
 
     comp = [1 if data[0] == data[1] else 0 for data in predict_result]
 
