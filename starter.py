@@ -1,12 +1,11 @@
 import numpy as np
+# from ml_bett.equilibrate_dataset import equalize_dataset
 from sklearn import model_selection
 from sklearn import preprocessing
 from sklearn import svm
 from sklearn.externals import joblib
 from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
-
-from ml_bett.equilibrate_dataset import equalize_dataset
 
 ## 3.04	3.29	2.3	1.92	1.85	4.0	0.0	0.0	0.0	0.0	2	1	0.0	1	2	1	0	3
 ## // odd_h odds_d odds_a odds_o odds_u pow_eq HDA_poiss    HDA_avg HDA_avg_wht HDA_poiss_scor  mean_h_goal mean_a_goals   h_conc_pg h_scor_pg h_point_pg a_conc_pg a_scor_pg a_point_pg HDA_res  diff_goals  h_goal  a_goal  ov_under    goals
@@ -25,7 +24,7 @@ test_dataset = np.loadtxt("resources\\testing.csv", delimiter="\t")
 past_features = np.loadtxt("resources\\past_features.csv", delimiter="\t")
 past_results = np.loadtxt("resources\\past_results.csv", delimiter="\t")
 
-clean_data = equalize_dataset(name_file)
+# clean_data = equalize_dataset(name_file)
 # odds = np.concatenate((dataset[:, 13:16], dataset[:, 17], dataset[:, 6]), axis=1)
 odds = dataset[:, 5:18]
 results = dataset[:, 24]
@@ -66,7 +65,7 @@ def hist_proof(clf_model):
 
 
 def evaluate_model(clf_model):
-    x_train, x_test, y_train, y_test = model_selection.train_test_split(odds, results, test_size=0.3,
+    x_train, x_test, y_train, y_test = model_selection.train_test_split(odds, results, test_size=0.1,
                                                                         random_state=0)
 
     # print([sum([1 if y == 0 else 0 for y in y_train]) / len(y_train) * 100,
