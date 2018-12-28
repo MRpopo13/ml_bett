@@ -20,14 +20,12 @@ def alt_result(false_res):
     :param false_res: actual prognostic assumed false
     :return: the new prognostic
     """
-    if false_res == 2 or false_res == 0:
-        return 1
-    else:
-        return 0
+    odd = random.randint(1, 2)
+    return false_res + odd % 3
 
 
 def simulate_randomness(weights):
-    simu = [compute_results_weighted_probs(weights) for _ in range(10)]
+    simu = [compute_results_weighted_probs(weights) for _ in range(1000)]
     counter = Counter(simu)
     occ = [counter[0], counter[1], counter[2]]
     return occ.index(max(occ))
@@ -48,17 +46,19 @@ def compute_results_weighted_probs(weights):
         return 0
 
 
-def empirical_new_result(result, is_correct):
+def empirical_new_result(result, is_correct, prob_true_positive, prob_true_negative):
     """
+    :param prob_true_negative: prob that a prono is correct if deemed as correct
+    :param prob_true_positive: prob that a prono is incorrect if deemed as incorrect
     :param result: result prognosticated
     :param is_correct: is correct prono
     :return:
     We make this assumption : if prono correct 61% just
     """
-    prob_true_correct = 59
+    prob_true_correct = prob_true_positive
     prob_false_correct = 100 - prob_true_correct
 
-    prob_true_incorrect = 62
+    prob_true_incorrect = prob_true_negative
     prob_false_incorrect = 100 - prob_true_incorrect
 
     ##if correct, prob that true result is
@@ -88,13 +88,13 @@ def empirical_new_result(result, is_correct):
     return simulate_randomness([a, b])
 
 
-def get_prediction_for_cor(model_predict, actual_prediction):
+def get_prediction_for_cor(model_predict, actual_prediction, prob_true_positive, prob_true_negative):
     """"
     For a prediction from the correct_model return the resulting prediction
     """
     # res = [int(actual_prediction[i]) if model_predict[i] == 1 else alt_result(actual_prediction[i])
     #        for i in range(len(actual_prediction))]
-    res = [empirical_new_result(actual_prediction[i], model_predict[i] == 1)
+    res = [empirical_new_result(actual_prediction[i], model_predict[i] == 1, prob_true_positive, prob_true_negative)
            for i in range(len(actual_prediction))]
     return res
 
