@@ -2,6 +2,7 @@
 from sklearn import svm
 from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import accuracy_score
 
 from ml_bett.eval_model import *
 
@@ -38,8 +39,9 @@ results = np.fromiter(seq, dtype=np.int)
 clf_logistic = LogisticRegression(random_state=0, solver='lbfgs', multi_class='multinomial')
 clf_svc = svm.SVC(gamma=0.001, C=1., decision_function_shape='ovo', cache_size=1000, kernel='rbf')
 clf_svr = svm.SVR()
-clf_neural = MLPClassifier(solver='lbfgs', alpha=1e-3,
-                           activation='logistic', random_state=1)
+clf_neural = MLPClassifier(solver='sgd', alpha=1e-3,
+                           activation='relu', random_state=1, learning_rate='adaptive',
+                           learning_rate_init=1e-2, batch_size=64, tol=1e-2, max_iter=300)
 
 map_clf_model = [(clf_logistic, 'logistic'), (clf_neural, 'neural')]
 # , (clf_svc, 'svc')
@@ -62,11 +64,15 @@ def train_model(clf_model, pkl_file, features, labels):
 
     acc = clf_model.score(x_test, y_test) * 100
     print('Accuracy of model {} is {:3.2f}%'.format(pkl_file, acc))
+
+    train_accuracy = accuracy_score(y_train, clf_model.predict(x_train))
+    test_accuracy = accuracy_score(y_test, clf_model.predict(x_test))
     # print_repartition_results(y_train)
     # print_repartition_results(y_test)
     # print_repartition_results(clf_model.predict(x_test))
     # eval_distance_real_repartition(clf_model.predict(x_test), y_test)
 
+    print('Train accuracy is {:3.2f}% test accuracy is {:3.2f}%'.format(train_accuracy*100, test_accuracy*100))
     if acc > 58:
         joblib.dump(clf_model,
                     get_model_pkl_file(pkl_file + '_' + '{:3.2f}'.format(acc)))  ## save model to pkl file
