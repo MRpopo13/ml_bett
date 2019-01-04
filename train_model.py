@@ -44,8 +44,7 @@ clf_neural = MLPClassifier(solver='lbfgs', alpha=1e-3,
 map_clf_model = [(clf_logistic, 'logistic'), (clf_neural, 'neural')]
 # , (clf_svc, 'svc')
 
-features_list = [([5, 22], 'all'), ([5, 10], 'preds'), ([10, 22], 'stats')]
-# , ([0, 22], 'odds+'), ([0, 5], 'odds')
+features_list = [([5, 22], 'all'), ([5, 10], 'preds'), ([10, 22], 'stats'), ([0, 22], 'odds+'), ([0, 5], 'odds') ]
 
 labels_list = [(22, 'fin'), (26, 'OU'), (27, 'BTTS'),(30, 'corOU'), (31, 'corBTTS'),
                (29, 'cor'),(32, 'avg'), (33, 'avgW'),
@@ -95,5 +94,5 @@ def launch_spec_model(model_name, feature_name, label_name):
 
 
 if __name__ == '__main__':
-    call_pipeline(map_clf_model, features_list, labels_list)
-    # launch_spec_model('neural', 'all', 'cor')
+    # call_pipeline(map_clf_model, features_list, labels_list)
+    launch_spec_model('neural', 'odds+', 'cor')
