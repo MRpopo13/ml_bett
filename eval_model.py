@@ -32,6 +32,8 @@ labels_list = [(22, 'fin'), (26, 'OU'), (27, 'BTTS'), (30, 'corOU'), (31, 'corBT
                (29, 'cor'), (32, 'avg'), (33, 'avgW'),
                (34, 'poiss')]
 
+features_list = [([5, 22], 'all'), ([5, 10], 'preds'), ([10, 22], 'stats'), ([0, 22], 'odds+'), ([0, 5], 'odds')]
+
 
 def eval_distance_real_repartition(pred_arr, real_arr):
     real_repartition = repartition_results(real_arr)
@@ -128,7 +130,7 @@ def analyze_bett(arr):
     avg_equi = sum([a[4] for a in arr]) / size
     med_odd = median([a[2] for a in arr])
     med_equi = median([a[4] for a in arr])
-    odd_80 = np.percentile([a[2] for a in arr], 80)
+    odd_80 = np.percentile([a[2] for a in arr], 95)
     equi_80 = np.percentile([a[4] for a in arr], 80)
     print_repartition_results([a[0] for a in arr])
     print_repartition_results([a[1] for a in arr])
@@ -138,6 +140,20 @@ def analyze_bett(arr):
         avg_odd, avg_equi,
         med_odd,
         med_equi, odd_80, equi_80, prob))
+
+
+def analyze_pred(arr):
+    # [old_pred[i], result[i], abs(equi[i]), max(proba[i])
+    size = len(arr)
+    avg_equi = sum([a[2] for a in arr]) / size
+    med_equi = median([a[2] for a in arr])
+    equi_80 = np.percentile([a[2] for a in arr], 80)
+    print_repartition_results([a[0] for a in arr])
+    print_repartition_results([a[1] for a in arr])
+    prob = np.percentile([a[3] for a in arr], 80)
+    print('Average equi {:3.2f}\nMed equi {:3.2f}'
+          '\nP80 equi {:3.2f} \nProba median {:3.2f} \n'.format(
+        avg_equi, med_equi, equi_80, prob))
 
 
 def evaluate_bett_gain_for_model(pkl_file, features, labels, ind_res, ind_prono):
@@ -190,9 +206,41 @@ def evaluate_bett_gain_for_model(pkl_file, features, labels, ind_res, ind_prono)
                                                                              gain / (sum(bett)) * 100))
 
 
+def find_prob_eff_model(pkl_file, features, labels, ind_res, ind_prono):
+    clf_model, x_test, y_test, x_scaler = common_eval(features, labels, pkl_file)
+
+    acc = clf_model.score(x_test, y_test[:, ind_res])
+    print('Accuracy of model {} is {:3.2f}%'.format(pkl_file, acc * 100))
+
+    model_predict = clf_model.predict(x_test)
+    proba = clf_model.predict_proba(x_test)
+    x_test = x_scaler.inverse_transform(x_test)
+    size = len(x_test)
+
+    old_pred = x_test[:, ind_prono]
+    result = y_test[:, 0]
+    equi = x_test[:, 5]
+
+    pred_corre = [[old_pred[i], result[i], abs(equi[i]), max(proba[i])] for
+                  i in range(size)
+                  if model_predict[i] == 1
+                  and max(proba[i]) > 0.7
+                  ]
+
+    correct_values = [corr for corr in pred_corre]
+    nb_correct = [corr for corr in correct_values if corr[0] == corr[1]]
+    incorrect = [corr for corr in correct_values if corr[0] != corr[1]]
+    analyze_pred(nb_correct)
+    analyze_pred(incorrect)
+    print('{:3.2f}% correct//{:3.2f}% incorrect'.format(len(nb_correct) / len(correct_values),
+                                                        len(incorrect) / len(correct_values)))
+
+
 if __name__ == '__main__':
     # evaluate_prediction_correct_model(get_model_pkl_file('neural_odds+_cor_64.77'), dataset[:, :22], dataset[:, 22:34],
     #                                   7, 6)
-    evaluate_bett_gain_for_model(get_model_pkl_file('neural_odds+_cor_64.77'), dataset[:, :22],
-                                 dataset[:, 22:34],
-                                 7, 6)
+    # evaluate_bett_gain_for_model(get_model_pkl_file('neural_odds+_cor_64.79'), dataset[:, :22],
+    #                              dataset[:, 22:34],
+    #                              7, 6)
+    find_prob_eff_model(get_model_pkl_file('neural_all_cor_60.14'), dataset[:, 5:22], dataset[:, 22:34],
+                        7, 1)

@@ -3,7 +3,6 @@ from sklearn.externals import joblib
 
 from ml_bett.utils import *
 
-
 # pow_eq HDA_poiss    HDA_avg HDA_avg_wht HDA_poiss_scor
 # 0      1               2       3           4
 
@@ -23,5 +22,44 @@ def test_current_data(pkl_file):
     print(clf_model.predict_proba(test_dataset))
 
 
+def predict_data(pkl_file, features, ind_prono):
+    print('For model {}'.format(pkl_file))
+    clf_model = joblib.load(pkl_file)
+
+    x_scaler = joblib.load('output/feature_scaler.scl')
+
+    x_trans = x_scaler.transform(features)
+    predict_result = clf_model.predict(x_trans)
+    proba_pred = clf_model.predict_proba(x_trans)
+    datas = [[features[i][ind_prono], proba_pred[i], i] for i in range(len(features)) if predict_result[i] == 1
+             and max(proba_pred[i]) * 100 > 60]
+
+    with open('resources/match.txt') as f:
+        content = f.readlines()
+    content = [x.strip() for x in content]
+    for d in datas:
+        print('For match {} prono is {} and proba is {:3.2f}'.format(content[d[2]], d[0], max(d[1]) * 100))
+    # correct = [d for d in datas if d[0] == d[1]]
+    # incorrect = [d for d in datas if d[0] != d[1]]
+    #
+    # print("Precision is {:3.2f}. Relevance is {:3.2f}.".format(len(correct) / len(datas) * 100,
+    #                                                            len(datas) / len(features) * 100))
+
+
+def launch_all_models():
+    models = ['neural_all_cor_60.14',
+              'neural_all_avg_63.99',
+              'neural_all_avgW_65.77',
+              'neural_all_poiss_62.55']
+
+    ind_prono = [1, 2, 3, 4]
+    # test_models_combined(models, ind_prono, past_features[:, :17], past_features[:, 17])
+
+    #
+    for i in range(len(models)):
+        predict_data(get_model_pkl_file(models[i]), test_dataset[:, :17], 1 + i)
+
+
 if __name__ == '__main__':
-    test_current_data(get_model_pkl_file('model'))
+    launch_all_models()
+    # test_current_data(get_model_pkl_file('model'))

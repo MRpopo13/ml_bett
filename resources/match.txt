@@ -1,5 +1,16 @@
-Liverpool VS Arsenal on 2018-12-29	173.39
-Hoffenheim VS BayernMunich on 2018-12-18	-79.53
-RB Leipzig VS Dortmund on 2018-12-19	7.14
-Juventus VS Sampdoria on 2018-12-29	134.52
-Sporting CP VS Belenenses on 2018-12-03	142.05
+AEK Larnaka VS Apollon on 2019-01-09	-76.24
+West Bromwich VS NorwichCity on 2019-01-12	21.99
+Leeds Utd VS DerbyCounty on 2019-01-11	46.54
+Hoffenheim VS BayernMunich on 2019-01-18	-79.53
+RB Leipzig VS Dortmund on 2019-01-19	7.14
+Napoli VS Lazio on 2019-01-20	120.56
+Olympique Safi VS RajaCasablanca on 2019-01-09	-0.31
+Pacos Ferreira VS Leixoes on 2019-01-09	101.01
+Estoril VS Arouca on 2019-01-09	58.95
+Penafiel VS AcadmicoViseu on 2019-01-09	40.65
+Varzim VS CovadaPiedade on 2019-01-09	17.38
+Braga B VS FCPortoB on 2019-01-09	26.44
+Guimarães B VS BenficaB on 2019-01-09	-29.43
+Sporting CP VS FCPorto on 2019-01-12	14.15
+Portimonense VS SportingBraga on 2019-01-10	-18.06
+Étoile du Sahel VS StadeTunisien on 2019-01-09	33.0
