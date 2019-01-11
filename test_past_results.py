@@ -1,6 +1,8 @@
 import numpy as np
 from sklearn.externals import joblib
+
 from ml_bett.utils import *
+
 # pow_eq HDA_poiss    HDA_avg HDA_avg_wht HDA_poiss_scor
 # 0      1               2       3           4
 
@@ -62,13 +64,24 @@ def test_data_for_indirect_model(pkl_file, features, ind_prono, results):
     predict_result = clf_model.predict(x_trans)
     proba_pred = clf_model.predict_proba(x_trans)
     datas = [[features[i][ind_prono], results[i]] for i in range(len(features)) if predict_result[i] == 1
-             and max(proba_pred[i]) * 100 > 60]
+             and max(proba_pred[i]) * 100 > 52]
 
     correct = [d for d in datas if d[0] == d[1]]
     incorrect = [d for d in datas if d[0] != d[1]]
 
     print("Precision is {:3.2f}. Relevance is {:3.2f}.".format(len(correct) / len(datas) * 100,
                                                                len(datas) / len(features) * 100))
+
+
+def map_clf_results(features, pred, ind_prono):
+    prono_list = [0 for _ in range(3)]
+    for i in range(4):
+        prono = int(features[ind_prono[i]])
+        if pred[i][0] == 0:
+            prono_list[prono] -= pred[i][1]
+        else:
+            prono_list[prono] += pred[i][1]
+    return prono_list
 
 
 def test_models_combined(models, ind_prono, features, results):
@@ -84,26 +97,33 @@ def test_models_combined(models, ind_prono, features, results):
         max_prob = 0
         datas = [[pred[0][i], max(pred[1][i])] for pred in predicts]
         index = 0
-        for ind in range(4):
-            prob = datas[ind][1] * 100
-            if prob > max_prob:
-                max_prob = prob
-                index = ind
-        if max_prob > 60 and datas[index][0] == 1:
-            pronos.append([features[i][ind_prono[index]], results[i], index])
+        prono_list = map_clf_results(features[i], datas, ind_prono)
+
+        # for ind in range(4):
+        #     prob = datas[ind][1] * 100
+        #     if prob > max_prob:
+        #         max_prob = prob
+        #         index = ind
+        # if max_prob > 52 and datas[index][0] == 1:
+        #     pronos.append([features[i][ind_prono[index]], results[i], index])
+        max_prono = max(prono_list)
+        # or (max_prono == 0 and prono_list.count(0) < 2)
+        if max_prono > 1.8:
+            final_prono = prono_list.index(max_prono)
+            pronos.append([final_prono, results[i], index])
 
     correct = [d for d in pronos if d[0] == d[1]]
     incorrect = [d for d in pronos if d[0] != d[1]]
 
-    print("Precision is {:3.2f}. Relevance is {:3.2f}.".format(len(correct) / len(pronos) * 100,
+    print("Precision is {:3.2f}% Relevance is {:3.2f}.".format(len(correct) / len(pronos) * 100,
                                                                len(pronos) / len(features) * 100))
 
 
 def launch_all_models():
-    models = ['neural_all_cor_60.14',
-              'neural_all_avg_63.99',
-              'neural_all_avgW_65.77',
-              'neural_all_poiss_62.55']
+    models = ['neural_all_cor_60.21',
+              'neural_all_avg_64.02',
+              'neural_all_avgW_65.50',
+              'neural_all_poiss_62.73']
 
     ind_prono = [1, 2, 3, 4]
     test_models_combined(models, ind_prono, past_features[:, :17], past_features[:, 17])

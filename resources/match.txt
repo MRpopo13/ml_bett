@@ -1,16 +1,30 @@
-AEK Larnaka VS Apollon on 2019-01-09	-76.24
+Olymp. Médéa VS USMBelAbbs on 2019-01-11	15.57
+ES Setif VS ASAnMlila on 2019-01-11	38.4
+MC Alger VS DRBTadjenanet on 2019-01-11	-5.64
+JS Kabylie VS MOBjaa on 2019-01-11	79.25
 West Bromwich VS NorwichCity on 2019-01-12	21.99
 Leeds Utd VS DerbyCounty on 2019-01-11	46.54
+Nancy VS ParisFC on 2019-01-11	-23.19
+Valenciennes VS Sochaux on 2019-01-11	7.97
+AC Ajaccio VS Bziers on 2019-01-11	12.53
+Lorient VS Chateauroux on 2019-01-11	62.77
+Clermont VS Niort on 2019-01-11	25.97
+GFC Ajaccio VS Auxerre on 2019-01-11	-24.99
+Orleans VS Metz on 2019-01-11	-98.43
+Chambly VS PauFC on 2019-01-11	79.8
+Cholet VS RodezAveyron on 2019-01-11	-51.0
+Drancy VS BourgPeronnas on 2019-01-11	-6.15
+Lyon Duchère VS QuevillyRouen on 2019-01-11	26.48
+Marignane VS Villefranche on 2019-01-11	32.67
+Entente SSG VS Tours on 2019-01-11	-3.94
+Lyon VS Reims on 2019-01-11	70.53
 Hoffenheim VS BayernMunich on 2019-01-18	-79.53
 RB Leipzig VS Dortmund on 2019-01-19	7.14
 Napoli VS Lazio on 2019-01-20	120.56
-Olympique Safi VS RajaCasablanca on 2019-01-09	-0.31
-Pacos Ferreira VS Leixoes on 2019-01-09	101.01
-Estoril VS Arouca on 2019-01-09	58.95
-Penafiel VS AcadmicoViseu on 2019-01-09	40.65
-Varzim VS CovadaPiedade on 2019-01-09	17.38
-Braga B VS FCPortoB on 2019-01-09	26.44
-Guimarães B VS BenficaB on 2019-01-09	-29.43
+Floriana VS HamrunSpartans on 2019-01-11	-7.21
 Sporting CP VS FCPorto on 2019-01-12	14.15
-Portimonense VS SportingBraga on 2019-01-10	-18.06
-Étoile du Sahel VS StadeTunisien on 2019-01-09	33.0
+Guimaraes VS Moreirense on 2019-01-11	53.6
+Santa Clara VS Benfica on 2019-01-11	-85.56
+Aves VS Feirense on 2019-01-11	15.02
+Cadiz VS Granada on 2019-01-11	19.75
+Rayo Vallecano VS CeltaVigo on 2019-01-11	-22.54

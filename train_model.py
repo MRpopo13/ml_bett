@@ -3,6 +3,7 @@ from sklearn import svm
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.neural_network import MLPClassifier
+from sklearn.tree import DecisionTreeClassifier
 
 from ml_bett.eval_model import *
 
@@ -64,11 +65,12 @@ results = np.fromiter(seq, dtype=np.int)
 clf_logistic = LogisticRegression(random_state=0, solver='lbfgs', multi_class='multinomial')
 clf_svc = svm.SVC(gamma=0.001, C=1., decision_function_shape='ovo', cache_size=1000, kernel='rbf')
 clf_svr = svm.SVR()
+clf_dec_tree = DecisionTreeClassifier(random_state=0)
 clf_neural = MLPClassifier(solver='sgd', alpha=1e-3,
                            activation='relu', random_state=1, learning_rate='adaptive',
                            learning_rate_init=1e-2, batch_size=64, tol=1e-2, max_iter=300)
 
-map_clf_model = [(clf_logistic, 'logistic'), (clf_neural, 'neural')]
+map_clf_model = [(clf_logistic, 'logistic'), (clf_neural, 'neural'), (clf_dec_tree, 'dec_tree')]
 # , (clf_svc, 'svc')
 
 features_list = [([5, 22], 'all'), ([5, 26], 'all_dble'), ([5, 10], 'preds'), ([10, 22], 'stats'), ([0, 22], 'odds+'),
@@ -80,6 +82,33 @@ labels_list = [(22, 'fin'), (26, 'OU'), (27, 'BTTS'), (30, 'corOU'), (31, 'corBT
 
 
 #
+
+def build_neural_parameters(alpha, solver, activation, random_state, learning_rate, learning_rate_init, batch_size, tol,
+                            max_iter):
+    return MLPClassifier(solver=solver, alpha=alpha,
+                         activation=activation, random_state=random_state, learning_rate=learning_rate,
+                         learning_rate_init=learning_rate_init, batch_size=batch_size, tol=tol, max_iter=max_iter)
+
+
+def randomize_neural_params():
+    features = dataset[:, 5:22]
+    labels = dataset[:, 29]
+
+    alphas = [10 ** (-1 * (i + 1)) for i in range(9)]
+    max_iter = [(i + 2) * 100 for i in range(7)]
+    learning_rates = [10 ** (-1 * i) for i in range(5)]
+    tol = [10 ** (-1 * i) for i in range(5)]
+    batches = [2 ** i for i in range(8)]
+    for al in alphas:
+        for iter in max_iter:
+            for rate in learning_rates:
+                for batch in batches:
+                    for t in tol:
+                        clf = build_neural_parameters(al, 'sgd', 'relu', 1, 'adaptive', rate, batch, t, iter)
+                        core_name = 'neural_all' + '_alph' + str(al) + '_it' + str(iter)
+                        train_model(clf, core_name, features, labels)
+
+
 def train_model(clf_model, pkl_file, features, labels):
     x_train, x_test, y_train, y_test = model_selection.train_test_split(features, labels, test_size=0.3,
                                                                         random_state=0)
@@ -140,4 +169,7 @@ def launch_spec_dble_model(model_name, feature_name, label_name):
 if __name__ == '__main__':
     # call_pipeline(map_clf_model, features_list, labels_list)
     # launch_spec_dble_model('neural', 'all_dble', 'avg')
-    launch_spec_model('neural', 'all', 'avg')
+    # launch_spec_model('neural', 'all', 'cor')
+    # launch_spec_model('neural', 'all', 'avgW')
+    # launch_spec_model('neural', 'all', 'poiss')
+    randomize_neural_params()
