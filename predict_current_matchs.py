@@ -33,14 +33,14 @@ def predict_data(pkl_file, features, ind_prono):
     proba_pred = clf_model.predict_proba(x_trans)
     datas = [[features[i][ind_prono], predict_result[i], proba_pred[i], i] for i in range(len(features)) if
              predict_result[i] == 1 and
-             max(proba_pred[i]) * 100 > 52]
+             max(proba_pred[i]) * 100 > 60]
 
     with open('resources/match.txt') as f:
         content = f.readlines()
     content = [x.strip() for x in content]
     for d in datas:
         print('For match {} prono is {} I think this prono is {} and proba is {:3.2f}'.format(content[d[3]],
-                                                                                              format_prono([0]),
+                                                                                              format_prono(d[0]),
                                                                                               correct_incorrec(d[1]),
                                                                                               max(d[2]) * 100))
     # correct = [d for d in datas if d[0] == d[1]]
@@ -66,10 +66,14 @@ def format_prono(prono):
 
 
 def launch_all_models():
-    models = ['neural_all_cor_60.21',
-              'neural_all_avg_64.02',
-              'neural_all_avgW_65.50',
-              'neural_all_poiss_62.73']
+    models = ['neural_all_cor_60.14',
+              'neural_all_avg_65.46',
+              'neural_all_avgW_65.77',
+              'neural_all_poiss_62.55']
+    # models = ['neural_all_cor_60.21',
+    #           'neural_all_avg_64.02',
+    #           'neural_all_avgW_65.50',
+    #           'neural_all_poiss_62.73']
 
     ind_prono = [1, 2, 3, 4]
     # test_models_combined(models, ind_prono, past_features[:, :17], past_features[:, 17])
